@@ -45,6 +45,22 @@ Use semantic buttons, a labeled preset radio group, a skip link and decorative S
 
 ## Guidance provenance
 
-Applied the installed ui-ux-pro-max accessibility and interaction rules again for task 3. Its search script
-could not run because the Python launcher has no installed interpreter; this palette
-and typography are deliberate project choices using the skill's general guidance.
+Applied the installed ui-ux-pro-max skill for task 3.
+The ui-ux-pro-max search now runs successfully and recommends a dark developer
+workspace with high contrast and visible focus. Keep the existing graphite/lime
+palette and local font pairing for continuity and offline use. The suggested
+marketing sections do not fit this task; the asset workbench is the main page.
+Selection and job status always include text, alongside color. Pending detail
+requests clear old controls; later responses cannot replace a newer selection.
+
+## Task 3 component rules
+
+Keep the upload, preset and library rail separate from the inspection workspace.
+Library selection uses a lime border, an inset marker and `aria-pressed`.
+Reports show three measured values, with tabular numerals; unavailable output
+uses descriptive text. Job badges spell out every state. Failed jobs and field
+errors use the error token. Deletion confirmation uses a bordered error surface.
+Downloads are 44px-tall links with the same focus and hover treatment as buttons.
+Long filenames wrap everywhere. File inputs and version controls fit the rail;
+tables become labeled rows below 600px. `[hidden]` always removes its contents.
+Primary buttons keep dark text on a lime surface in every enabled state.
