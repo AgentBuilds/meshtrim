@@ -1,0 +1,12 @@
+node_modules/
+dist/
+build/
+.env
+.farm/
+__pycache__/
+.venv/
+*.log
+.aider*
+.npm-cache/
+.next/
+coverage/
