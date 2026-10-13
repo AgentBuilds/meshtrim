@@ -1,32 +1,41 @@
 # Task 1 verification
 
-Verified on Node.js 24.15.0 and npm 11.12.1 in the factory sandbox.
+Verified on 2026-10-13 with Node.js 24.15.0 and npm 11.12.1.
 
 - `npm install --no-audit --no-fund --prefer-offline`: passed.
 - `npm run build`: passed; JavaScript syntax checked and frontend copied to `dist/`.
-- `npm test`: six checks passed, covering health responses, unknown routes,
+- `npm test`: seven checks passed, covering health responses, unknown routes,
   allowed HTTP methods, development/production asset serving, source-file exclusion,
   frontend loading/error states, retry recovery and unexpected API payloads.
+  The pretest script builds fresh production assets automatically. A real loopback
+  HTTP test verifies health JSON, the page and empty HEAD bodies for success/404 responses.
 - `npm start`: server reached its listening state at `http://127.0.0.1:3001`.
 - `npm run dev`: source-serving watcher reached its listening state.
-- Design token contrast calculations: every text/accent/error pair on the three
-  background surfaces exceeds 4.5:1 (lowest checked ratio: 6.76:1).
+  Both smoke-check servers were stopped afterward.
+- Live HTTP requests returned 200 for the page, health API, JavaScript, CSS and
+  favicon with their expected content types.
 - `git diff --check`: passed.
 
 ## Environment limits
 
-The sandbox denied registry access and the shared cache did not contain the proposed
-framework dependencies. The final scaffold deliberately has no third-party dependencies.
+The requested `git add -A` and commit were attempted, but the sandbox denied
+creation of `.git/index.lock`. The verified changes remain in the working tree.
 
-The sandbox denied HTTP requests to loopback from terminal tests. Routing checks
-therefore invoke the real HTTP server request listener in-process without sockets.
-Server startup was verified separately; live HTTP behavior is not claimed as verified.
+The scaffold uses Node's built-in HTTP server and native browser modules, with no
+third-party runtime or build dependencies. Installation completed in about two seconds.
+
+Live loopback HTTP requests succeeded in this run. In-process routing checks are
+retained alongside the live test to cover both development and production file serving.
 
 The in-app browser was unavailable. Chrome automation failed to load its request-header
-policy on the initial inventory and retry. Browser rendering, responsive geometry,
+policy on the initial creation attempt and retry. Browser rendering, responsive geometry,
 keyboard interaction and console errors could not be inspected. The frontend error
 and recovery flows were exercised in a JavaScript VM with a minimal DOM adapter;
 this is not a substitute for a browser check.
+
+The installed ui-ux-pro-max skill was reviewed. Its search script cannot run because
+no Python interpreter is installed; the existing design system follows its general
+accessibility and interaction guidance.
 
 ## Manual browser check when the connector is available
 

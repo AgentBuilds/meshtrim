@@ -8,8 +8,8 @@ _Bu loyiha AI Farm tomonidan avtonom tarzda qurilmoqda..._
 
 Requires Node.js 22.12+ and npm. This scaffold uses Node's built-in HTTP server
 and native browser modules, with no third-party runtime or build dependencies.
-The npm registry was blocked in the factory sandbox and the shared cache lacked
-the proposed framework packages, so this foundation builds fully offline.
+Node provides everything needed for this foundation, so installation and builds
+work without downloading framework packages.
 
 ```sh
 npm install --no-audit --no-fund --prefer-offline
@@ -45,6 +45,6 @@ the default host. Use `HOST=0.0.0.0` for a container.
 - `server/`: HTTP app factory and server entry.
 - `scripts/build.js`: deterministic static build and syntax checks.
 - `public/`: static assets; `dist/`: generated production build (ignored).
-- `tests/`: in-process HTTP routing/static-serving and frontend connectivity checks;
-  run `npm run build` before `npm test` to generate the production assets.
+- `tests/`: HTTP routing/static-serving, live loopback HTTP and frontend connectivity
+  checks. Run `npm test`; its pretest script builds fresh production assets first.
 - `DESIGN_SYSTEM.md`: palette, typography, interaction and accessibility decisions.

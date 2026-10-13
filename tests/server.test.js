@@ -2,9 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createApp, distDirectory } from '../server/app.js';
 import { fileURLToPath } from 'node:url';
+import { once } from 'node:events';
 
 // Exercise the real HTTP request listener without opening sockets. This also
-// keeps tests runnable in factory environments that deny loopback requests.
+// keeps routing and file-exposure checks independent of network behavior.
 function request(server, url, method = 'GET') {
   return new Promise(resolve => {
     const headers = new Map();
@@ -34,6 +35,32 @@ test('health API responds and unknown API routes remain JSON 404s', async () => 
   const post = await request(server, '/api/health', 'POST');
   assert.equal(post.status, 405);
   assert.equal(post.headers.get('allow'), 'GET, HEAD');
+});
+
+test('production server responds over HTTP with health JSON, assets and empty HEAD bodies', async t => {
+  const server = createApp();
+  t.after(() => new Promise(resolve => {
+    server.close(resolve);
+    server.closeAllConnections();
+  }));
+  server.listen(0, '127.0.0.1');
+  await once(server, 'listening');
+  const base = `http://127.0.0.1:${server.address().port}`;
+  const get = (route, method = 'GET') => fetch(`${base}${route}`, {
+    method, signal: AbortSignal.timeout(5000),
+  });
+
+  const health = await get('/api/health');
+  assert.equal(health.status, 200);
+  assert.deepEqual(await health.json(), { status: 'ok', service: 'meshtrim', version: '0.1.0' });
+  const page = await get('/');
+  assert.equal(page.status, 200);
+  assert.match(await page.text(), /MeshTrim/);
+  for (const route of ['/', '/api/health', '/missing']) {
+    const head = await get(route, 'HEAD');
+    assert.equal(head.status, route === '/missing' ? 404 : 200);
+    assert.equal(await head.text(), '');
+  }
 });
 
 for (const development of [true, false]) {
