@@ -107,7 +107,12 @@ try {
   const other = server.store.createAsset('other.glb', glbFixture());
   let release;
   const gate = new Promise(resolve => { release = resolve; });
-  await page.route(`**/api/assets/${assetId}`, async route => { await gate; await route.continue(); });
+  let routeFinished;
+  const routed = new Promise(resolve => { routeFinished = resolve; });
+  await page.route(`**/api/assets/${assetId}`, async route => {
+    await gate;
+    try { await route.continue(); } finally { routeFinished(); }
+  });
   await page.locator('#refresh-asset').click();
   await text('#detail-status', 'Loading inspection');
   await page.locator('#refresh-library').click();
@@ -115,6 +120,7 @@ try {
   await page.getByRole('button', { name: /^other.glb/ }).click();
   await text('#asset-title', 'other.glb');
   release();
+  await routed;
   await page.unroute(`**/api/assets/${assetId}`);
   await page.waitForLoadState('networkidle');
   assert.equal(await page.locator('#asset-title').textContent(), 'other.glb');
@@ -126,6 +132,8 @@ try {
   await page.locator('#upload-button').click();
   await text('#asset-title', longName);
   await enabled('#refresh-asset');
+  await page.locator('#refresh-asset').focus();
+  assert.ok(await page.locator('.skip-link').evaluate(element => element.getBoundingClientRect().bottom <= 0), 'Unfocused skip link stays outside the viewport');
   await mkdir(new URL('../output/playwright/', import.meta.url), { recursive: true });
   for (const width of [320, 375, 768, 1024, 1440]) {
     await page.setViewportSize({ width, height: 1000 });
@@ -179,6 +187,19 @@ try {
   assert.ok((await page.locator('#upload-error').textContent()).length > 0);
   assert.deepEqual(errors.filter(e => !e.startsWith('Failed to load resource:')), [], 'Failure recovery must not raise JavaScript errors');
   step('Library and preset outage recovery, server validation and actionable errors');
+  for (let index = 0; index < 9; index++) server.store.createAsset(`library-${index}.glb`, glbFixture());
+  await page.locator('#refresh-library').click();
+  await text('#library-status', '11 saved assets');
+  await text('#page-label', '1–8 of 11');
+  assert.equal(await page.locator('.asset-row').count(), 8);
+  await page.locator('#next-page').click();
+  await text('#page-label', '9–11 of 11');
+  assert.equal(await page.locator('.asset-row').count(), 3);
+  assert.equal(await page.locator('#next-page').isDisabled(), true);
+  await page.locator('#previous-page').click();
+  await text('#page-label', '1–8 of 11');
+  assert.equal(await page.locator('#previous-page').isDisabled(), true);
+  step('Library pagination, item counts and first/last-page controls');
   console.log('Browser acceptance passed. Screenshots: output/playwright/');
 } finally {
   if (browser) await browser.close();

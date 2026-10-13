@@ -37,8 +37,11 @@ the default host. Use `HOST=0.0.0.0` for a container.
 - Responsive workbench with API connectivity feedback and three selectable presets.
 - SQLite-backed GLB upload, mesh/texture inspection, stored versions, downloads,
   size reports and persistent optimization jobs are available through the API.
-- The frontend still has empty preview/report states; API upload wiring,
-  the optimization worker and synchronized 3D cameras are future tasks.
+- API-connected uploads and asset library with pagination, mesh/texture inspection,
+  three presets, queue/cancel controls, saved-version comparisons and downloads.
+- Responsive loading, empty and error states, deep links, keyboard controls and
+  measured size reports. The optimization worker and synchronized 3D cameras are
+  future tasks; comparison panels currently show file inspection details.
 - Static files are served through an explicit allowlist; other resources return JSON 404s.
 
 ## Backend API
@@ -96,10 +99,19 @@ an output is larger. No sample assets are inserted automatically.
 
 ## Structure and verification
 
-- `index.html`, `src/`: frontend entry, API check and design tokens.
+- `index.html`, `src/`: API-connected asset workbench and design tokens.
 - `server/`: HTTP app factory and server entry.
 - `scripts/build.js`: deterministic static build and syntax checks.
 - `public/`: static assets; `dist/`: generated production build (ignored).
 - `tests/`: HTTP routing/static-serving, live loopback HTTP and frontend connectivity
   checks. Run `npm test`; its pretest script builds fresh production assets first.
 - `DESIGN_SYSTEM.md`: palette, typography, interaction and accessibility decisions.
+
+Browser acceptance: install optional test tooling with
+`npm install --save-dev playwright --no-audit --no-fund --prefer-offline`, then run
+`npm run acceptance`. It launches installed Chrome against an isolated in-memory
+database, exercises the workbench and writes screenshots to `output/playwright/`.
+Set `BROWSER_CHANNEL` for another installed Playwright-compatible browser channel.
+The check has a 90-second deadline and closes its browser and server on completion.
+Completed output fixtures are seeded at the internal worker boundary to verify
+comparison and download UI; they do not represent an implemented optimizer.

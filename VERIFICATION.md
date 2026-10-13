@@ -77,3 +77,41 @@ Verified on 2026-10-13 with Node.js 24.15.0 and npm 11.12.1.
   creation of `.git/index.lock` is denied by the environment. The requested
   `task 2: Implement the backend API` commit could not be created; changes remain
   in the working tree.
+
+## Task 3 frontend verification
+
+Verified on 2026-10-13 with Node.js 24.15.0, Playwright 1.63.0 and installed Chrome.
+
+- Recovered the API-connected frontend from the interrupted task 3 checkpoint.
+  Upload validation, drag/drop, preset selection, library pagination, inspection,
+  stored-version selection, measured size reports, downloads, queue/cancel controls,
+  inline deletion confirmation and asset deep links are connected to the API.
+- Reviewed the design/design-system skills and existing design specification before
+  UI edits. Fixed step-marker shrinking beside long filenames and refined the
+  hidden skip-link positioning. Inspected desktop/mobile browser screenshots.
+- Fixed the acceptance harness's intercepted-request race: it now awaits the
+  delayed route handler before removing interception. The 90-second hard deadline
+  bounds browser execution and cleanup, addressing the prior factory timeout.
+- `npm test`: production build and all 13 tests passed.
+- `npm run acceptance`: real Chrome end-to-end checks passed in about 10 seconds.
+  Checks cover upload and invalid input, meshes/textures, byte-exact downloads,
+  presets, queue reuse/cancellation, two stored output versions and negative savings,
+  deep-link reload, late-response selection races, inline deletion and Escape,
+  library/preset outage recovery, server validation and 11-asset pagination.
+- Responsive checks passed at 320, 375, 768, 1024 and 1440px with a long filename;
+  keyboard focus and reduced-motion checks passed. The normal flow had zero page
+  or console errors. Expected HTTP-error diagnostics from controlled failures
+  were distinguished from JavaScript errors, of which there were none.
+- Screenshots: `output/playwright/workbench-desktop.png` and
+  `output/playwright/workbench-mobile.png` (generated files are ignored).
+- `git diff --check`: passed.
+- Installing optional Playwright tooling with the prescribed npm flags was
+  blocked by shared-cache write permissions. Browser verification used the
+  already installed Playwright in the parent workspace. README documents the
+  optional installation for standalone checkouts; runtime remains dependency-free.
+- Worker execution and synchronized 3D rendering are subsequent project tasks.
+  Completed-version browser fixtures were seeded through the store's internal
+  worker boundary. The UI accurately states this limitation and never invents
+  savings or pretends a queued job has produced an output.
+- The required `git add -A` failed because creation of `.git/index.lock` is denied.
+  The requested commit was also attempted; verified changes remain in the working tree.

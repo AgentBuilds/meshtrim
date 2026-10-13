@@ -64,3 +64,5 @@ Downloads are 44px-tall links with the same focus and hover treatment as buttons
 Long filenames wrap everywhere. File inputs and version controls fit the rail;
 tables become labeled rows below 600px. `[hidden]` always removes its contents.
 Primary buttons keep dark text on a lime surface in every enabled state.
+Step markers and refresh actions retain their minimum size beside long filenames.
+The skip link stays outside the viewport until keyboard focus, including after scrolling.
