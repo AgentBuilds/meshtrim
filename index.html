@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="hsl(210 20% 9%)" />
-    <meta name="description" content="MeshTrim: a workspace for inspecting and optimizing GLB assets for the web." />
+    <meta name="description" content="Upload, inspect and manage your GLB assets with MeshTrim." />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="stylesheet" href="/src/styles.css" />
     <title>MeshTrim — GLB workbench</title>
@@ -16,49 +16,82 @@
         <svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="m32 6 23 13v26L32 58 9 45V19L32 6Z"/><path d="m9 19 23 13 23-13M32 32v26M32 6v26M9 45l23-13 23 13"/></svg>
         <span>MeshTrim<span class="brand-dot">.</span></span>
       </a>
-      <div class="topbar-meta"><span class="tag">GLB WORKBENCH</span><span class="version">v0.1 / scaffold</span></div>
+      <div class="topbar-meta"><span class="tag">GLB WORKBENCH</span><a class="nav-link" href="#library-title">Asset library</a></div>
     </header>
     <main id="workspace" class="workspace" tabindex="-1">
       <div class="page-heading">
-        <div><p class="eyebrow">SMALLER ASSETS. MORE ROOM TO BUILD.</p><h1>Your scene, streamlined.</h1><p class="intro">Inspect, optimize, and compare your GLB assets in one workspace.</p></div>
-        <span class="phase"><span></span> Workspace foundation</span>
+        <div><p class="eyebrow">SMALLER ASSETS. MORE ROOM TO BUILD.</p><h1>Your scene, streamlined.</h1><p class="intro">One workspace for your GLB files, their details, and every saved version.</p></div>
+        <span class="phase"><span></span> Inspect · prepare · compare</span>
       </div>
       <div class="workbench">
         <aside class="configuration" aria-labelledby="setup-title">
           <div class="section-title"><span class="step">01</span><h2 id="setup-title">Asset setup</h2></div>
-          <div class="upload-empty">
-            <svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="m32 6 23 13v26L32 58 9 45V19L32 6Z"/><path d="m9 19 23 13 23-13M32 32v26M32 6v26M9 45l23-13 23 13"/></svg>
-            <h3>Start with a GLB</h3><p>Your model’s next stop:<br />a lighter web experience.</p>
-            <button class="primary-button" disabled aria-describedby="upload-note">Choose GLB file <span aria-hidden="true">↗</span></button>
-            <p id="upload-note" class="caption">Upload support is coming next.</p>
-          </div>
-          <fieldset class="preset-group">
-            <legend>Optimization preset</legend><p class="field-description">Choose a starting point for future runs.</p>
-            <label class="preset"><input type="radio" name="preset" value="quality" /><span><strong>Quality</strong><small>Preserve visual detail</small></span></label>
-            <label class="preset"><input type="radio" name="preset" value="balanced" checked /><span><strong>Balanced</strong><small>Detail meets delivery</small></span><span class="recommended">DEFAULT</span></label>
-            <label class="preset"><input type="radio" name="preset" value="compact" /><span><strong>Compact</strong><small>Prioritize smaller assets</small></span></label>
+          <form id="upload-form">
+            <div id="drop-zone" class="upload-empty">
+              <svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="m32 6 23 13v26L32 58 9 45V19L32 6Z"/><path d="m9 19 23 13 23-13M32 32v26M32 6v26M9 45l23-13 23 13"/></svg>
+              <h3>Start with a GLB</h3><p>Drop a file here, or browse below.</p>
+              <label class="file-label" for="glb-file">Choose GLB file</label>
+              <input id="glb-file" type="file" accept=".glb,model/gltf-binary" aria-describedby="upload-note upload-error" disabled />
+              <p id="file-summary" class="caption">No file selected</p>
+              <p id="upload-note" class="caption">Loading upload settings…</p>
+              <p id="upload-error" class="error field-error" role="alert"></p>
+              <button id="upload-button" class="primary-button" type="submit" disabled>Upload &amp; inspect <span aria-hidden="true">↗</span></button>
+              <p id="upload-status" class="caption" role="status"></p>
+            </div>
+          </form>
+          <fieldset id="preset-group" class="preset-group" disabled>
+            <legend>Optimization preset</legend><p class="field-description">Settings come from the API.</p>
+            <div id="presets"><p class="caption">Loading presets…</p></div>
           </fieldset>
-          <p class="setup-note">Presets are selectable. Processing and downloads will arrive in subsequent tasks.</p>
+          <p id="preset-detail" class="setup-note"></p>
+          <button id="optimize-button" class="primary-button" disabled>Queue optimization</button>
+          <p id="worker-note" class="setup-note">Checking processing availability…</p>
+          <p id="action-status" class="setup-note" role="status" aria-live="polite"></p>
+          <section class="library" aria-labelledby="library-title">
+            <div class="preview-heading"><h2 id="library-title">Asset library</h2><button id="refresh-library" class="status-button" disabled>Refresh</button></div>
+            <p id="library-status" class="caption" role="status">Loading assets…</p>
+            <ul id="asset-list" class="asset-list"></ul>
+            <div class="pagination"><button id="previous-page" class="status-button" disabled>Previous</button><span id="page-label" class="caption">—</span><button id="next-page" class="status-button" disabled>Next</button></div>
+          </section>
         </aside>
-        <section class="comparison" aria-labelledby="preview-title">
-          <div class="preview-heading"><div class="section-title"><span class="step">02</span><h2 id="preview-title">Compare previews</h2></div><span class="caption">Paired view</span></div>
+        <section class="comparison" aria-labelledby="asset-title">
+          <div class="preview-heading"><div class="section-title"><span class="step">02</span><h2 id="asset-title" tabindex="-1">Your asset workspace</h2></div><button id="refresh-asset" class="status-button" disabled>Refresh asset</button></div>
+          <p id="detail-status" class="detail-status caption" role="status">Upload a GLB or choose a saved asset to inspect it.</p>
           <div class="viewers">
-            <section class="viewer" aria-label="Original preview">
-              <div class="viewer-bar"><span>Original</span><span class="caption">No asset</span></div>
-              <div class="viewer-empty"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="m32 6 23 13v26L32 58 9 45V19L32 6Z"/><path d="m9 19 23 13 23-13M32 32v26M32 6v26M9 45l23-13 23 13"/></svg><h3>Your scene belongs here</h3><p>A model preview will appear once GLB upload is available.</p></div>
-              <div class="viewer-footer"><span>GLB</span><span>—</span></div>
+            <section class="viewer" aria-label="Original comparison">
+              <div class="viewer-bar"><span>Original</span><span id="original-size" class="caption">No asset</span></div>
+              <div id="original-panel" class="viewer-empty"><span class="scene-mark" aria-hidden="true">01</span><h3>Your source, intact.</h3><p>The original file and its inspection will appear here after upload.</p></div>
+              <div class="viewer-footer"><span>GLB · original</span><span id="original-footer">—</span></div>
             </section>
-            <section class="viewer" aria-label="Optimized preview">
-              <div class="viewer-bar"><span class="accent-label">Optimized</span><span class="caption">No asset</span></div>
-              <div class="viewer-empty"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="m32 6 23 13v26L32 58 9 45V19L32 6Z"/><path d="m9 19 23 13 23-13M32 32v26M32 6v26M9 45l23-13 23 13"/></svg><h3>Room for a lighter scene</h3><p>The optimized preview will appear after a run.</p></div>
-              <div class="viewer-footer"><span>GLB</span><span>—</span></div>
+            <section class="viewer" aria-label="Optimized comparison">
+              <div class="viewer-bar"><span class="accent-label">Optimized</span><span id="optimized-size" class="caption">No version</span></div>
+              <div id="optimized-panel" class="viewer-empty"><span class="scene-mark" aria-hidden="true">02</span><h3>Make room for less.</h3><p>Saved optimized versions will appear here when processing is available.</p></div>
+              <div class="viewer-footer"><span id="optimized-footer">GLB · output</span><span>Version comparison</span></div>
             </section>
           </div>
-          <div class="report-empty"><span class="report-icon" aria-hidden="true">↓</span><div><h3>Every byte, accounted for.</h3><p>Size reports and downloadable versions will appear here after optimization.</p></div><button class="secondary-button" disabled>Download GLB</button></div>
+          <p class="preview-note caption">These panels compare file details. Interactive 3D previews and synchronized cameras are coming in a later task.</p>
+          <div id="asset-details" hidden>
+            <section class="report-panel" aria-labelledby="report-title">
+              <div class="preview-heading"><h2 id="report-title">Size report</h2><label class="version-label" for="version-select">Compare version <select id="version-select" disabled><option>No optimized version</option></select></label></div>
+              <div id="size-report" class="size-report"></div>
+              <p id="report-note" class="caption"></p>
+              <div id="downloads" class="action-row"></div>
+            </section>
+            <section class="inspection-panel" aria-labelledby="inspection-title">
+              <div class="preview-heading"><h2 id="inspection-title">Inside the original</h2><span id="inspection-meta" class="caption"></span></div>
+              <div id="inspection-summary" class="metrics"></div>
+              <details open><summary>Meshes <span id="mesh-count" class="caption"></span></summary><div id="meshes"></div></details>
+              <details><summary>Textures <span id="texture-count" class="caption"></span></summary><div id="textures"></div></details>
+              <p id="extensions" class="caption"></p>
+            </section>
+            <section class="jobs-panel" aria-labelledby="jobs-title"><div class="preview-heading"><h2 id="jobs-title">Optimization history</h2><span class="caption">Saved job status</span></div><ul id="jobs" class="job-list"></ul></section>
+            <div class="asset-management"><button id="delete-asset" class="danger-button">Delete asset</button><p class="caption">Removes this asset, its versions and its jobs.</p></div>
+            <div id="delete-confirmation" class="confirmation" hidden><p id="delete-message"></p><div class="action-row"><button id="confirm-delete" class="danger-button">Delete permanently</button><button id="cancel-delete" class="secondary-button">Keep asset</button></div></div>
+          </div>
         </section>
       </div>
       <footer class="workspace-footer"><p>Built for scenes that ship to the web.</p><div class="api-connection"><span id="api-status" class="connection-state loading" role="status" aria-live="polite"><span class="status-dot"></span><span id="api-status-text">Checking API…</span></span><button id="check-api" class="status-button" disabled aria-busy="true">Checking…</button></div></footer>
-      <noscript><p class="setup-note">JavaScript is required to check API connectivity. GLB processing is not available yet.</p></noscript>
+      <noscript><p class="setup-note">Enable JavaScript to upload GLB files and manage your asset library.</p></noscript>
     </main>
     <script type="module" src="/src/app.js"></script>
   </body>

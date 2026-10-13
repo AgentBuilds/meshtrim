@@ -31,12 +31,20 @@ Mobile-first single-column layout; paired previews at 760px and wider.
 Minimum target 44px, visible 2px lime keyboard focus with a 3px offset.
 Hover brightens the surface; active uses a 1px translation; disabled remains readable.
 Health checks show loading, success and actionable error states in a polite live region.
-Preview placeholders explain what will appear; future upload/optimization controls are disabled.
+Uploads use a labeled native file input and a separate submit button; drag and drop
+is an optional shortcut. Validation errors stay next to the input. Library rows are
+buttons with a selected state. Asset links preserve selection through reloads.
+Actions show loading text and block duplicate submissions. Destructive deletion
+requires an inline confirmation naming the asset, with a keyboard-accessible cancel.
+Empty comparison panels explain the actual API capability: inspection is available;
+3D rendering and worker execution are subsequent tasks. Queued jobs never imply savings.
+Reports use stored byte counts, including negative savings; absent data stays absent.
+Inspection tables wrap names and become stacked rows on narrow screens.
 Transitions last 180ms and never animate width or height. Respect reduced motion.
 Use semantic buttons, a labeled preset radio group, a skip link and decorative SVG icons.
 
 ## Guidance provenance
 
-Applied the installed ui-ux-pro-max accessibility and interaction rules. Its search script
+Applied the installed ui-ux-pro-max accessibility and interaction rules again for task 3. Its search script
 could not run because the Python launcher has no installed interpreter; this palette
 and typography are deliberate project choices using the skill's general guidance.
