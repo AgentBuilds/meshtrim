@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="hsl(210 20% 9%)" />
+    <meta name="description" content="MeshTrim: a workspace for inspecting and optimizing GLB assets for the web." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="/src/styles.css" />
+    <title>MeshTrim — GLB workbench</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#workspace">Skip to workspace</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="MeshTrim home">
+        <svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="m32 6 23 13v26L32 58 9 45V19L32 6Z"/><path d="m9 19 23 13 23-13M32 32v26M32 6v26M9 45l23-13 23 13"/></svg>
+        <span>MeshTrim<span class="brand-dot">.</span></span>
+      </a>
+      <div class="topbar-meta"><span class="tag">GLB WORKBENCH</span><span class="version">v0.1 / scaffold</span></div>
+    </header>
+    <main id="workspace" class="workspace" tabindex="-1">
+      <div class="page-heading">
+        <div><p class="eyebrow">SMALLER ASSETS. MORE ROOM TO BUILD.</p><h1>Your scene, streamlined.</h1><p class="intro">Inspect, optimize, and compare your GLB assets in one workspace.</p></div>
+        <span class="phase"><span></span> Workspace foundation</span>
+      </div>
+      <div class="workbench">
+        <aside class="configuration" aria-labelledby="setup-title">
+          <div class="section-title"><span class="step">01</span><h2 id="setup-title">Asset setup</h2></div>
+          <div class="upload-empty">
+            <svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="m32 6 23 13v26L32 58 9 45V19L32 6Z"/><path d="m9 19 23 13 23-13M32 32v26M32 6v26M9 45l23-13 23 13"/></svg>
+            <h3>Start with a GLB</h3><p>Your model’s next stop:<br />a lighter web experience.</p>
+            <button class="primary-button" disabled aria-describedby="upload-note">Choose GLB file <span aria-hidden="true">↗</span></button>
+            <p id="upload-note" class="caption">Upload support is coming next.</p>
+          </div>
+          <fieldset class="preset-group">
+            <legend>Optimization preset</legend><p class="field-description">Choose a starting point for future runs.</p>
+            <label class="preset"><input type="radio" name="preset" value="quality" /><span><strong>Quality</strong><small>Preserve visual detail</small></span></label>
+            <label class="preset"><input type="radio" name="preset" value="balanced" checked /><span><strong>Balanced</strong><small>Detail meets delivery</small></span><span class="recommended">DEFAULT</span></label>
+            <label class="preset"><input type="radio" name="preset" value="compact" /><span><strong>Compact</strong><small>Prioritize smaller assets</small></span></label>
+          </fieldset>
+          <p class="setup-note">Presets are selectable. Processing and downloads will arrive in subsequent tasks.</p>
+        </aside>
+        <section class="comparison" aria-labelledby="preview-title">
+          <div class="preview-heading"><div class="section-title"><span class="step">02</span><h2 id="preview-title">Compare previews</h2></div><span class="caption">Paired view</span></div>
+          <div class="viewers">
+            <section class="viewer" aria-label="Original preview">
+              <div class="viewer-bar"><span>Original</span><span class="caption">No asset</span></div>
+              <div class="viewer-empty"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="m32 6 23 13v26L32 58 9 45V19L32 6Z"/><path d="m9 19 23 13 23-13M32 32v26M32 6v26M9 45l23-13 23 13"/></svg><h3>Your scene belongs here</h3><p>A model preview will appear once GLB upload is available.</p></div>
+              <div class="viewer-footer"><span>GLB</span><span>—</span></div>
+            </section>
+            <section class="viewer" aria-label="Optimized preview">
+              <div class="viewer-bar"><span class="accent-label">Optimized</span><span class="caption">No asset</span></div>
+              <div class="viewer-empty"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="m32 6 23 13v26L32 58 9 45V19L32 6Z"/><path d="m9 19 23 13 23-13M32 32v26M32 6v26M9 45l23-13 23 13"/></svg><h3>Room for a lighter scene</h3><p>The optimized preview will appear after a run.</p></div>
+              <div class="viewer-footer"><span>GLB</span><span>—</span></div>
+            </section>
+          </div>
+          <div class="report-empty"><span class="report-icon" aria-hidden="true">↓</span><div><h3>Every byte, accounted for.</h3><p>Size reports and downloadable versions will appear here after optimization.</p></div><button class="secondary-button" disabled>Download GLB</button></div>
+        </section>
+      </div>
+      <footer class="workspace-footer"><p>Built for scenes that ship to the web.</p><div class="api-connection"><span id="api-status" class="connection-state loading" role="status" aria-live="polite"><span class="status-dot"></span><span id="api-status-text">Checking API…</span></span><button id="check-api" class="status-button" disabled aria-busy="true">Checking…</button></div></footer>
+      <noscript><p class="setup-note">JavaScript is required to check API connectivity. GLB processing is not available yet.</p></noscript>
+    </main>
+    <script type="module" src="/src/app.js"></script>
+  </body>
+</html>
