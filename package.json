@@ -1,10 +1,12 @@
 {
   "name": "meshtrim",
-  "version": "0.1.0",
+  "version": "0.1.0-canary.1791916671896",
   "private": true,
   "type": "module",
   "description": "A GLB asset optimization workbench",
-  "engines": { "node": ">=22.13.0" },
+  "engines": {
+    "node": ">=22.13.0"
+  },
   "scripts": {
     "dev": "node --watch server/index.js --dev",
     "build": "node scripts/build.js",
