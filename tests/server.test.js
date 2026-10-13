@@ -23,8 +23,9 @@ function request(server, url, method = 'GET') {
   });
 }
 
-test('health API responds and unknown API routes remain JSON 404s', async () => {
-  const server = createApp({ staticDirectory: null });
+test('health API responds and unknown API routes remain JSON 404s', async t => {
+  const server = createApp({ staticDirectory: null, databasePath: ':memory:' });
+  t.after(() => server.store.close());
   const health = await request(server, '/api/health');
   assert.equal(health.status, 200);
   assert.equal(health.headers.get('cache-control'), 'no-store');
@@ -38,7 +39,7 @@ test('health API responds and unknown API routes remain JSON 404s', async () => 
 });
 
 test('production server responds over HTTP with health JSON, assets and empty HEAD bodies', async t => {
-  const server = createApp();
+  const server = createApp({ databasePath: ':memory:' });
   t.after(() => new Promise(resolve => {
     server.close(resolve);
     server.closeAllConnections();
@@ -64,11 +65,13 @@ test('production server responds over HTTP with health JSON, assets and empty HE
 });
 
 for (const development of [true, false]) {
-  test(`${development ? 'development' : 'production'} server serves frontend assets without exposing project files`, async () => {
+  test(`${development ? 'development' : 'production'} server serves frontend assets without exposing project files`, async t => {
     const server = createApp({
       development,
+      databasePath: ':memory:',
       staticDirectory: development ? fileURLToPath(new URL('../', import.meta.url)) : distDirectory,
     });
+    t.after(() => server.store.close());
     const page = await request(server, '/');
     assert.equal(page.status, 200);
     assert.match(page.headers.get('content-type'), /text\/html/);

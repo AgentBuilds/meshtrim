@@ -44,3 +44,36 @@ accessibility and interaction guidance.
 3. Select each preset by mouse and keyboard; confirm visible focus.
 4. Check 320px, 375px and desktop viewport widths for overflow and readable previews.
 5. Confirm upload and download remain disabled and explain the future scope.
+
+## Task 2 backend verification
+
+Verified on 2026-10-13 with Node.js 24.15.0 and npm 11.12.1.
+
+- Implemented the documented HTTP API for GLB uploads, inspection, pagination,
+  three presets, durable jobs, stored versions, size reports and binary downloads.
+  SQLite stores metadata and GLB BLOBs transactionally with foreign keys and WAL.
+- Fixed the prior timeout cause: test cleanup tried to unlink live SQLite files on
+  Windows before closing their servers. Cleanup now closes each server/process
+  before deleting its test database, and shutdown is safe to repeat.
+- `npm test`: 13 tests passed, including the automatic production build and syntax
+  checks. Coverage includes byte-exact original/output downloads, Unicode filename
+  headers, HEAD responses, pagination, invalid input, GLB bounds, unsafe external
+  references, job cancellation/conflicts/retries, and asset deletion cascades.
+- Persistence was verified by closing/reopening a file-backed database, including
+  completed versions/reports, queued jobs, interrupted-job recovery and deletion.
+  A separate test launches the production entry point in two distinct Node
+  processes and verifies uploaded metadata and original bytes survive restart.
+- `node server/index.js`: production server reached its listening state at
+  `http://127.0.0.1:3001`; stopped after verification.
+- Live browser verification was attempted using the computer-use skill. The
+  in-app browser is unavailable; Chrome fails to load its request-header policy.
+  Browser rendering and console errors remain unverified. HTTP/static serving
+  and frontend connectivity/error recovery are covered by the automated tests.
+- Optimization execution is deliberately a later task. The API advertises
+  `optimizationAvailable: false`, persists queued jobs, and provides internal
+  worker methods; it does not pretend to compress an upload or produce savings.
+  The HTTP API contract and this boundary are documented in README.md.
+- `git diff --check`: passed. The required `git add -A` was attempted, but
+  creation of `.git/index.lock` is denied by the environment. The requested
+  `task 2: Implement the backend API` commit could not be created; changes remain
+  in the working tree.

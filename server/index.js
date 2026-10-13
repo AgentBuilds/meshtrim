@@ -14,12 +14,15 @@ if (!development && !existsSync(new URL('../dist/index.html', import.meta.url)))
   throw new Error('Production build missing. Run npm run build before npm start.');
 }
 const staticDirectory = development ? fileURLToPath(new URL('../', import.meta.url)) : distDirectory;
-const server = createApp({ staticDirectory, development }).listen(port, host, () => {
+const server = createApp({ staticDirectory, development, databasePath: process.env.DATABASE_PATH });
+server.store.recoverInterruptedJobs();
+server.listen(port, host, () => {
   console.log(`MeshTrim is running at http://${host}:${port}`);
 });
 
 server.on('error', (error) => {
   console.error(`MeshTrim could not start: ${error.message}`);
+  server.store.close();
   process.exitCode = 1;
 });
 

@@ -10,3 +10,5 @@ __pycache__/
 .npm-cache/
 .next/
 coverage/
+data/
+tests/.tmp/
